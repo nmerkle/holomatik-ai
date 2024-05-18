@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 import os
+import base64
 import signal
 import json
 import time
@@ -129,6 +130,12 @@ async def createPDF(text):
    pdf.save(f"./temp/{fileName}")
    return fileName, images
 
+async encodePDF():
+    with open(file, 'rb') as pdf_file:
+	    pdf_binary_data = pdf_file.read()
+	pdf_base64_encoded = base64.b64encode(pdf_binary_data)
+	return pdf_base64_encoded
+
 async def health_check(path, request_headers):
     if path == "/healthz":
         return http.HTTPStatus.OK, [], b"OK\n"
@@ -154,7 +161,8 @@ async def handler(websocket):
             await websocket.send(respMsg)
         elif msg['type'] == "pdf":
             file, images = await createPDF(msg)
-            resp = {"type": "pdf", "src": f"https://holomatik-ai.onrender.com/temp/{file}"}
+			enc_base64_pdf = await encodePDF(f"./temp/{file}")
+            resp = {"type": "pdf", "src": f"data:application/pdf;base64,{enc_base64_pdf}"}
             rep = json.dumps(resp)
             #TODO: LLM prediction with LLM. Adding generated text to pdf
             await websocket.send(rep)
