@@ -162,7 +162,7 @@ async def handler(websocket):
         elif msg['type'] == "pdf":
             file, images = await createPDF(msg)
             enc_base64_pdf = await encodePDF(f"./temp/{file}")
-            resp = {"type": "pdf", "src": f"data:application/pdf;base64,{enc_base64_pdf}"}
+            resp = {"type": "pdf", "file": file, "src": f"data:application/pdf;base64,{enc_base64_pdf}"}
             rep = json.dumps(resp)
             #TODO: LLM prediction with LLM. Adding generated text to pdf
             await websocket.send(rep)
