@@ -156,7 +156,7 @@ async def handler(websocket):
             await websocket.send(respMsg)
         elif msg['type'] == "pdf":
             file, images = await createPDF(msg)
-            resp = {"type": "pdf", "src": f"https://holomatik-ai.fly.dev/{file}"}
+            resp = {"type": "pdf", "src": f"https://holomatik-ai.onrender.com/{file}"}
             rep = json.dumps(resp)
             #TODO: LLM prediction with LLM. Adding generated text to pdf
             await websocket.send(rep)
