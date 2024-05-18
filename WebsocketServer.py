@@ -169,8 +169,8 @@ async def handler(websocket):
             await websocket.send(rep)
         elif msg['type'] == "rating":
             print(f"The rating was: {msg['rating']}")
-			js[index]['numRatings'] = 1 if "numRatings" not in js[index] else js[index]['numRatings'] += 1
-			js[index]['rating'] = int(msg['rating']) if "rating" not in js[index] else js[index]['rating'] = (js[index]['rating'] + int(msg['rating'])) / js[index]['numRatings']
+            js[index]['numRatings'] = 1 if "numRatings" not in js[index] else js[index]['numRatings'] += 1
+            js[index]['rating'] = int(msg['rating']) if "rating" not in js[index] else js[index]['rating'] = (js[index]['rating'] + int(msg['rating'])) / js[index]['numRatings']
 
 async def main():
     loop = asyncio.get_running_loop()
