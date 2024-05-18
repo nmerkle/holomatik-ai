@@ -17,6 +17,7 @@ import random
 import functools
 import math
 
+os.mkdir("./temp")
 dataset = pd.read_csv("./heart_attack_prediction_dataset.csv")
 js = json.loads(dataset.to_json(orient="records"))
 
@@ -43,36 +44,36 @@ async def createPlots(data):
    dfBP = pd.DataFrame({"Measurements":xAxis, "Systolic": systolics, "Diastolic": diastolics})
    fig = px.line(dfBP, x="Measurements", y=["Systolic", "Diastolic"], title="Bloodpressure Development", markers=True)
    fileBP = f"bp_scatter_{time.time()}.png"
-   fig.write_image(f"./{fileBP}", engine="kaleido")
+   fig.write_image(f"./temp/{fileBP}", engine="kaleido")
 
    bpBarDF = pd.DataFrame({"BP": ["Low", "Normal", "High"], "data": [data['bpLow'], data['bpNormal'], data['bpHigh']]})
    fig = px.bar(bpBarDF, x="BP", y="data", color="BP", title="Bloodpressure Bar Chart")
    fileBPBar = f"bp_bar_{time.time()}.png"
-   fig.write_image(f"./{fileBPBar}", engine="kaleido")
+   fig.write_image(f"./temp/{fileBPBar}", engine="kaleido")
 
    # HR Plots (scatter and bar chart)
    hrs = data['hrValues']
    dfHR = pd.DataFrame({"Measurements": xAxis, "HR": hrs})
    fig = px.line(dfHR, x="Measurements", y="HR", title="Heartrate Development", markers=True)
    fileHR = f"hr_scatter_{time.time()}.png"
-   fig.write_image(f"./{fileHR}", engine="kaleido")
+   fig.write_image(f"./temp/{fileHR}", engine="kaleido")
 
    hrBarDF = pd.DataFrame({"HR": ["Low", "Normal", "High"], "data": [data['hrLow'], data['hrNormal'], data['hrHigh']]})
    fig = px.bar(hrBarDF, x="HR", y="data", color="HR", title="Heartrate Bar Chart")
    fileHRBar = f"hr_bar_{time.time()}.png"
-   fig.write_image(f"./{fileHRBar}", engine="kaleido")
+   fig.write_image(f"./temp/{fileHRBar}", engine="kaleido")
 
    # Stress Level Plots (scatter and bar chart)
    stress = data['stressValues']
    dfStress = pd.DataFrame({"Measurements":xAxis, "Stress Level": stress})
    fig = px.line(dfStress, x="Measurements", y="Stress Level", title="Stress Level", markers=True)
    fileStress = f"stress_scatter_{time.time()}.png"
-   fig.write_image(f"./{fileStress}", engine="kaleido")
+   fig.write_image(f"./temp/{fileStress}", engine="kaleido")
 
    stressBarDF = pd.DataFrame({"Stress": ["Low", "Normal", "High"], "data": [data['stressLow'], data['stressNormal'], data['stressHigh']]})
    fig = px.bar(stressBarDF, x="Stress", y="data", color="Stress", title="Stress Level Bar Chart")
    fileStressBar = f"stress_bar_{time.time()}.png"
-   fig.write_image(f"./{fileStressBar}", engine="kaleido")
+   fig.write_image(f"./temp/{fileStressBar}", engine="kaleido")
    return [fileBP, fileBPBar, fileHR, fileHRBar, fileStress, fileStressBar]
 
 async def createPDF(text):
@@ -125,7 +126,7 @@ async def createPDF(text):
    pdf.meta["author"] = "HoloMatik.AI"
    t = time.time()
    fileName = f"{t}_{text['patientID']}.pdf"
-   pdf.save(f"./{fileName}")
+   pdf.save(f"./temp/{fileName}")
    return fileName, images
 
 async def health_check(path, request_headers):
@@ -139,36 +140,26 @@ async def handler(websocket):
         if msg['type'] == "delete":
             f = msg['file']
             print(f)
-            cmd = f'sudo rm ./{f}'
-            cmd2 = f"sudo rm "
+            cmd = f'rm ./temp/{f}'
+            cmd2 = f"rm "
             for img in images:
-                cmd2 += f"./{img} "
+                cmd2 += f"./temp/{img} "
             print(cmd2)
             await asyncio.sleep(10)
             os.system(cmd)
             os.system(cmd2)
-            #d = Timer(10.0, os.system(cmd))
-            #d.start()
-            #os.system(f"sudo rm ./server/{f[1]}")
         elif msg['type'] == "sample":
             respMsg = await sampleExample()
             print(respMsg)
             await websocket.send(respMsg)
         elif msg['type'] == "pdf":
             file, images = await createPDF(msg)
-            resp = {"type": "pdf", "src": f"https://holomatik-ai.onrender.com/{file}"}
+            resp = {"type": "pdf", "src": f"https://holomatik-ai.onrender.com/temp/{file}"}
             rep = json.dumps(resp)
             #TODO: LLM prediction with LLM. Adding generated text to pdf
             await websocket.send(rep)
         elif msg['type'] == "rating":
             print(f"The rating was: {msg['rating']}")
-
-'''
-ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
-localhost_pem = pathlib.Path(__file__).with_name("cert.pem")
-localhost_key = pathlib.Path(__file__).with_name("key.pem")
-ssl_context.load_cert_chain(localhost_pem, keyfile=localhost_key)
-'''
 
 async def main():
     loop = asyncio.get_running_loop()
