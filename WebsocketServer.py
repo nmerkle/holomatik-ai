@@ -34,7 +34,7 @@ async def sampleExample():
       print(col)
    c['type'] = "sample"
    result = json.dumps(c)
-   return result
+   return index, result
 
 async def createPlots(data):
    # Bloodpressure Plots (scatter and bar chart)
@@ -82,7 +82,7 @@ async def createPDF(text):
    counter = 0
    plots = ""
    for img in images:
-       plots += f"![alt text](./{img})\n\n"
+       plots += f"![alt text](./temp/{img})\n\n"
        print(plots)
        counter += 1
    stdSystolic = functools.reduce(lambda a, b: math.sqrt((a-text['meanSystolicValue'])**2)+math.sqrt((b-text['meanSystolicValue'])**2), text['systolicValues'])
@@ -157,7 +157,7 @@ async def handler(websocket):
             os.system(cmd)
             os.system(cmd2)
         elif msg['type'] == "sample":
-            respMsg = await sampleExample()
+            index, respMsg = await sampleExample()
             print(respMsg)
             await websocket.send(respMsg)
         elif msg['type'] == "pdf":
@@ -169,12 +169,13 @@ async def handler(websocket):
             await websocket.send(rep)
         elif msg['type'] == "rating":
             print(f"The rating was: {msg['rating']}")
+			js[index]['numRatings'] = 1 if "numRatings" not in js[index] else js[index]['numRatings'] += 1
+			js[index]['rating'] = int(msg['rating']) if "rating" not in js[index] else js[index]['rating'] = (js[index]['rating'] + int(msg['rating'])) / js[index]['numRatings']
 
 async def main():
     loop = asyncio.get_running_loop()
     stop = loop.create_future()
     loop.add_signal_handler(signal.SIGTERM, stop.set_result, None)
-    #port = int(os.environ.get("PORT", "8001"))
     async with websockets.serve(handler, "", 8080, process_request=health_check):
         await stop
 
