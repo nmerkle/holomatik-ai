@@ -130,7 +130,7 @@ async def createPDF(text):
    pdf.save(f"./temp/{fileName}")
    return fileName, images
 
-async encodePDF():
+async def encodePDF():
     with open(file, 'rb') as pdf_file:
 	    pdf_binary_data = pdf_file.read()
 	pdf_base64_encoded = base64.b64encode(pdf_binary_data)
