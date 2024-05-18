@@ -131,10 +131,10 @@ async def createPDF(text):
    return fileName, images
 
 async def encodePDF(file):
-    with open(file, 'rb') as pdf_file:
-	    pdf_binary_data = pdf_file.read()
-    pdf_base64_encoded = base64.b64encode(pdf_binary_data)
-    return pdf_base64_encoded
+   with open(file, 'rb') as pdf_file:
+	   pdf_binary_data = pdf_file.read()
+   pdf_base64_encoded = base64.b64encode(pdf_binary_data)
+   return pdf_base64_encoded
 
 async def health_check(path, request_headers):
     if path == "/healthz":
@@ -161,7 +161,7 @@ async def handler(websocket):
             await websocket.send(respMsg)
         elif msg['type'] == "pdf":
             file, images = await createPDF(msg)
-			enc_base64_pdf = await encodePDF(f"./temp/{file}")
+            enc_base64_pdf = await encodePDF(f"./temp/{file}")
             resp = {"type": "pdf", "src": f"data:application/pdf;base64,{enc_base64_pdf}"}
             rep = json.dumps(resp)
             #TODO: LLM prediction with LLM. Adding generated text to pdf
