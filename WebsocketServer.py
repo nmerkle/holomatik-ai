@@ -133,8 +133,8 @@ async def createPDF(text):
 async def encodePDF(file):
     with open(file, 'rb') as pdf_file:
 	    pdf_binary_data = pdf_file.read()
-	pdf_base64_encoded = base64.b64encode(pdf_binary_data)
-	return pdf_base64_encoded
+    pdf_base64_encoded = base64.b64encode(pdf_binary_data)
+    return pdf_base64_encoded
 
 async def health_check(path, request_headers):
     if path == "/healthz":
