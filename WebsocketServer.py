@@ -20,6 +20,10 @@ import math
 
 os.mkdir("./temp")
 dataset = pd.read_csv("./heart_attack_prediction_dataset.csv")
+with open("./dataset.json", "r") as jsonFile:
+    jsonData = jsonFile.read()
+    reports = json.loads(jsonData)
+
 js = json.loads(dataset.to_json(orient="records"))
 
 async def sampleExample():
@@ -33,8 +37,9 @@ async def sampleExample():
       c[col] = js[index][col]
       print(col)
    c['type'] = "sample"
+   c['index'] = index
    result = json.dumps(c)
-   return index, result
+   return result
 
 async def createPlots(data):
    # Bloodpressure Plots (scatter and bar chart)
@@ -102,6 +107,7 @@ async def createPDF(text):
    exerciseH = text['exerciseHours']
    name = f"**Name:** {text['firstName']} {text['lastName']}\n\n" if text['firstName'] != "" and text['lastName'] != "" else ""
    patientID = f"**Patient-ID:** {text['patientID']}\n\n" if text['patientID'] != "" or text['patientID'] != None else ""
+   report = reports[text['index']]['report']
    patient_profile = (
    f"{name}{patientID}**Age:** {text['age']}\n\n**Gender:** {text['sex']}\n\n**Income per year:** {text['income']}\n\n**Country:** {text['country']}\n\n**Continent:** {text['continent']}\n\n"
    f"**Diabetes:** {diabetes}\n\n**Cholesterol:** {text['cholesterol']} mg/dl\n\n**Triglycerid:** {text['triglycerid']} mg/dl\n\n**Smoking Status:** {smoker}\n\n"
@@ -122,7 +128,7 @@ async def createPDF(text):
    pdf.add_section(Section(f"# Health Report ({text['date']})\n\n## Patient Profile\n\n{patient_profile}\n"), user_css="h1 {text-align:center;}")
    pdf.add_section(Section(f"## Patient Activity and Life-Style\n\n{patient_activity}\n\n\n## Vital Sign Measurements\n\n{meanTxt}{plots}\n\n"), user_css="h2, h3 {text-align:left;}")
    #pdf.add_section(Section(f"### Medical History\n\n{meanTxt}{plots}\n\n### Recommendations\n\nGenerated Text from LLM"), user_css="h2, h3 {text-align:left;}")
-   pdf.add_section(Section(f"### Follow up\n\nGenerated Text from LLM"))
+   pdf.add_section(Section(f"### Generated Text from LLM\n\n{report}"))
    pdf.meta["title"] = "Health Report"
    pdf.meta["author"] = "HoloMatik.AI"
    t = time.time()
@@ -132,7 +138,7 @@ async def createPDF(text):
 
 async def encodePDF(file):
    with open(file, 'rb') as pdf_file:
-	   pdf_binary_data = pdf_file.read()
+       pdf_binary_data = pdf_file.read()
    pdf_base64_encoded = base64.b64encode(pdf_binary_data)
    pdf_string = pdf_base64_encoded.decode("ascii")
    return pdf_string
@@ -143,6 +149,7 @@ async def health_check(path, request_headers):
 
 
 async def handler(websocket):
+    images = None
     async for message in websocket:
         msg = json.loads(message)
         if msg['type'] == "delete":
@@ -157,7 +164,7 @@ async def handler(websocket):
             os.system(cmd)
             os.system(cmd2)
         elif msg['type'] == "sample":
-            index, respMsg = await sampleExample()
+            respMsg = await sampleExample()
             print(respMsg)
             await websocket.send(respMsg)
         elif msg['type'] == "pdf":
