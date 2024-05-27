@@ -38,8 +38,8 @@ async def sampleExample():
       print(col)
    c['type'] = "sample"
    c['index'] = index
-   result = json.dumps(c)
-   return result
+   #result = json.dumps(c)
+   return c
 
 async def createPlots(data):
    # Bloodpressure Plots (scatter and bar chart)
@@ -82,7 +82,7 @@ async def createPlots(data):
    fig.write_image(f"./temp/{fileStressBar}", engine="kaleido")
    return [fileBP, fileBPBar, fileHR, fileHRBar, fileStress, fileStressBar]
 
-async def createPDF(text):
+async def createPDF(index, text):
    images = await createPlots(text)
    counter = 0
    plots = ""
@@ -107,7 +107,7 @@ async def createPDF(text):
    exerciseH = text['exerciseHours']
    name = f"**Name:** {text['firstName']} {text['lastName']}\n\n" if text['firstName'] != "" and text['lastName'] != "" else ""
    patientID = f"**Patient-ID:** {text['patientID']}\n\n" if text['patientID'] != "" or text['patientID'] != None else ""
-   report = reports[text['index']]['report']
+   report = reports[int(index)]['report']
    patient_profile = (
    f"{name}{patientID}**Age:** {text['age']}\n\n**Gender:** {text['sex']}\n\n**Income per year:** {text['income']}\n\n**Country:** {text['country']}\n\n**Continent:** {text['continent']}\n\n"
    f"**Diabetes:** {diabetes}\n\n**Cholesterol:** {text['cholesterol']} mg/dl\n\n**Triglycerid:** {text['triglycerid']} mg/dl\n\n**Smoking Status:** {smoker}\n\n"
@@ -150,6 +150,7 @@ async def health_check(path, request_headers):
 
 async def handler(websocket):
     images = None
+    pointer = None
     async for message in websocket:
         msg = json.loads(message)
         if msg['type'] == "delete":
@@ -165,10 +166,12 @@ async def handler(websocket):
             os.system(cmd2)
         elif msg['type'] == "sample":
             respMsg = await sampleExample()
-            print(respMsg)
-            await websocket.send(respMsg)
+            result = json.dumps(respMsg)
+            print(result)
+            pointer = int(repspMsg['index'])
+            await websocket.send(result)
         elif msg['type'] == "pdf":
-            file, images = await createPDF(msg)
+            file, images = await createPDF(pointer, msg)
             enc_base64_pdf = await encodePDF(f"./temp/{file}")
             resp = {"type": "pdf", "file": file, "src": f"data:application/pdf;base64,{enc_base64_pdf}"}
             rep = json.dumps(resp)
