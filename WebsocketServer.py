@@ -100,7 +100,7 @@ async def createPDF(index, text):
    stdStress /= (len(text['stressValues'])-1)
    smoker = "smoker" if text['smoker'] == "1" else "non-smoker"
    print(f"Obesity: {text['obesity']}")
-   obese = "obese" if text['obesity'] == 1 else "non-obese"
+   obese = "obese" if text['obesity'] == "1" else "non-obese"
    diabetes = "yes" if text['diabetes'] == "1" else "no"
    familyHistory = "yes" if text['familyHistory'] == "1" else "no"
    medicationUser = "yes" if text['medicationUse'] == "1" else "no"
