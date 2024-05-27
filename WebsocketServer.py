@@ -168,7 +168,8 @@ async def handler(websocket):
             respMsg = await sampleExample()
             result = json.dumps(respMsg)
             print(result)
-            pointer = int(repspMsg['index'])
+            pointer = int(respMsg['index'])
+            print(pointer)
             await websocket.send(result)
         elif msg['type'] == "pdf":
             file, images = await createPDF(pointer, msg)
