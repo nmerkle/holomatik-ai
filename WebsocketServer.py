@@ -99,7 +99,8 @@ async def createPDF(index, text):
    stdStress = functools.reduce(lambda a, b: math.sqrt((a-text['meanStress'])**2)+math.sqrt((b-text['meanStress'])**2), text['stressValues'])
    stdStress /= (len(text['stressValues'])-1)
    smoker = "smoker" if text['smoker'] == "1" else "non-smoker"
-   obese = "obese" if text['obesity'] == "1" else "non-obese"
+   print(f"Obesity: {text['obesity']}")
+   obese = "obese" if text['obesity'] == 1 else "non-obese"
    diabetes = "yes" if text['diabetes'] == "1" else "no"
    familyHistory = "yes" if text['familyHistory'] == "1" else "no"
    medicationUser = "yes" if text['medicationUse'] == "1" else "no"
@@ -107,7 +108,7 @@ async def createPDF(index, text):
    exerciseH = text['exerciseHours']
    name = f"**Name:** {text['firstName']} {text['lastName']}\n\n" if text['firstName'] != "" and text['lastName'] != "" else ""
    patientID = f"**Patient-ID:** {text['patientID']}\n\n" if text['patientID'] != "" or text['patientID'] != None else ""
-   report = reports[int(index)]['report']
+   report = reports[int(index)]['report'][0:reports[int(index)]['report'].index('<|eot_id|>')]
    patient_profile = (
    f"{name}{patientID}**Age:** {text['age']}\n\n**Gender:** {text['sex']}\n\n**Income per year:** {text['income']}\n\n**Country:** {text['country']}\n\n**Continent:** {text['continent']}\n\n"
    f"**Diabetes:** {diabetes}\n\n**Cholesterol:** {text['cholesterol']} mg/dl\n\n**Triglycerid:** {text['triglycerid']} mg/dl\n\n**Smoking Status:** {smoker}\n\n"
