@@ -1,0 +1,236 @@
+@prefix entity: <http://holomatik-ai.org/Entity#> .
+@prefix property: <http://holomatik-ai.org/Property#> .
+@prefix concept: <http://holomatik-ai.org/Concept#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix foaf: <http://xmlns.com/foaf/0.1/> .
+
+concept:Installable rdf:type rdfs:Class.
+concept:Execuatable rdf:type rdfs:Class.
+concept:Context rdf:type rdfs:Class.
+concept:Programm rdfs:subClassOff concept:Executable.
+concept:Instruction rdfs:subClassOff concept:Executable.
+concept:Tool rdfs:subClassOff concept:Installable.
+concept:ProgrammingLanguage rdfs:subClassOf concept:Tool.
+concept:Code rdfs:subClassOf concept:Executable.
+concept:File rdfs:subClassOf concept:Executable.
+concept:Script rdfs:subClassOf concept:Executable.
+concept:Library rdfs:subClassOf concept:Executable, concept:Installable.
+concept:SoftwareLibrary rdf:subClassOf concept:Library.
+concept:Developer rdfs:subClassOf foaf:Person.
+concept:User rdfs:subClassOf foaf:Person.
+concept:Physicist rdfs:subClassOf foaf:Person.
+concept:HoloBot rdfs:subClassOf foaf:Agent.
+concept:Environment rdf:subClassOf concept:Executable, concept:Installable.
+concept:OSEnvironment rdfs:subClassOf concept:Environment.
+concept:PythonEnvironment rdfs:subClassOf concept:Environment.
+concept:VirtualEnvironment rdfs:subClassOf concept:Environment.
+concept:OperatingSystem rdfs:subClassOf concept:Environment.
+concept:Patient rdfs:subClassOf concept:User, 
+			       concept:Context.
+concept:Location rdfs:subClassOf concept:Context.
+concept:Activity rdfs:subClassOf concept:Context.
+concept:Mood rdf:type rdfs:Class.
+
+property:hasFirstname rdf:type rdf:Property;
+	rdfs:domain foaf:Person;
+	rdfs:range xsd:string.
+
+property:hasLastname rdf:type rdf:Property;
+	rdfs:domain foaf:Person;
+	rdfs:range xsd:string.
+
+property:hasAge rdf:type rdf:Property;
+	rdfs:domain foaf:Person;
+	rdfs:range xsd:integer.
+
+property:hasSex rdf:type rdf:Property;
+	rdfs:domain foaf:Person;
+	rdfs:range xsd:string..
+
+property:isObese rdf:type rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:boolean.
+
+property:isSmoker rdf:type rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:boolean.
+
+property:hasDiabetes rdf:type rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:boolean.
+
+property:hasCholesterolValue a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:integer.
+
+property:hasTriglyceridValue a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:integer.
+
+property:hasBMI rdf:type rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:float.
+
+property:hasHeartDiseaseInFamilyHistory a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:boolean.
+
+property:hasExcerciseHoursPerWeek a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:float.
+
+property:hasAlcoholConsumption a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:string.
+
+property:hasPhysicalActivityDaysPerWeek a rdf:Property;
+	rdfs:doain concept:Patient;
+	rdfs:range xsd:float.
+
+property:hasSedentaryHoursPerDay a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:float.
+
+property:hasSleepingHoursPerDay a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:float.
+
+property:hasPreviousHeartProblems a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:boolean.
+
+property:usesMedication a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:boolean.
+
+property:hasDiet a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:string.
+
+property:hasSystolicValue a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:integer.
+
+property:hasDiastolicValue a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:integer.
+
+property:hasHeartrate a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:integer.
+
+property:hasStressLevel a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:integer.
+
+property:hasMood a rdf:Property;
+	rdfs:domain concept:Patient;
+	rdf:range concept:Mood.
+
+property:hasIcomePerYear rdf:type rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:integer.
+
+property:livesInCountry rdf:type rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:string.
+
+property:livesOnContinent rdf:type rdf:Property;
+	rdfs:domain concept:Patient;
+	rdfs:range xsd:string.
+
+property:usesTool rdf:type rdf:Property;
+	rdfs:domain concept:Instruction;
+	rdfs:range concept:Tool.
+	  
+property:programmedIn rdf:type rdf:Property;
+	rdfs:domain concept:Code;
+	rdfs:range concept:ProgrammingLanguage.
+	
+property:executes rdf:type rdf:Property.
+	
+property:executesProgramm rdfs:subPropertyOf property:executes;
+	rdfs:domain concept:HoloBot;
+	rdfs:range concept:Programm.
+	
+property:executesInstruction rdfs:subPropertyOf property:executes;
+	rdfs:domain concept:Programm;
+	rdfs:range concept:Instruction.
+	
+property:executesCode rdfs:subPropertyOf property:executes;
+	rdfs:domain concept:Instruction;
+	rdfs:range concept:Code.
+	
+property:executesFile rdfs:subPropertyOf property:executes;
+	rdfs:domain concept:Instruction;
+	rdfs:range concept:File.
+	  
+property:developedBy rdf:type rdf:Property;
+	rdfs:domain concept:Code;
+	rdfs:range concept:Developer.
+	
+property:requires rdf:type rdf:Property.
+	
+property:requiresLibrary rdfs:subPropertyOf property:requires;
+	rdfs:domain concept:Instruction;
+	rdfs:range concept:Library.
+	
+property:requiresEnvironment rdfs:subPropertyOf property:requires;
+	rdfs:domain concept:Instruction;
+	rdfs:range concept:Environment.
+	  
+property:hasName rdf:type foaf:name. 
+	  
+property:hasEMail rdf:type foaf:mbox.
+	  
+property:hasGithubAccount rdf:type rdf:Property;
+	rdfs:domain concept:Developer;
+	rdfs:range xsd:anyURI.
+	
+property:isInstalled rdf:type rdf:Property;
+	rdfs:domain concept:Installable;
+	rdfs:range xsd:boolean.
+	
+property:hasPath rdf:type rdf:Property;
+	rdfs:range xsd:string.
+	
+property:hasFileName rdf:subPropertyOf foaf:name.
+
+property:hasDirectory rdf:type rdf:Property;
+	rdfs:range xsd:string.
+	
+property:hasVersion rdf:type rdf:Property;
+	rdfs:domain concept:Installable, 
+		    concept:Executable;
+	rdfs:range xsd:string.
+	
+property:hasCommand rdf:type rdf:Property;
+	rdfs:domain concept:Instruction;
+	rdfs:range xsd:string.
+
+property:hasStartCommand rdfs:subPropertyOf property:hasCommand.
+
+property:hasInstallationCommand rdfs:subPropertyOf property:hasCommand.
+
+property:hasInstallationScript rdf:type rdf:Property;
+	rdfs:domain concept:Installable;
+	rdfs:range concept:File.
+
+property:implements rdf:type rdf:Property;
+	rdfs:domain concept:Instruction;
+	rdfs:range concept:Code.
+	
+property:hasGPU rdf:type rdf:Property;
+	rdfs:domain concept:Environment;
+	rdfs:range xsd:boolean.
+	
+property:numberOfGPUs rdf:type rdf:Property;
+	rdfs:domain concept:Environment;
+	rdfs:range xsd:integer.
+	
+
+property:isRunning a rdf:Property;
+	rdfs:domain concept:Executable;
+	rdfs:range xsd:boolean.
