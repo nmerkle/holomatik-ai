@@ -1,7 +1,7 @@
 # Demo Application - AutoGenHR 
 The **[Web Demo Application](https://nmerkle.github.io/HoloBot.html)** demonstrates the purpose of ***AutoGenHR***, an application that allows the automated generation of health reports. 
 
-# Important note
+# ! Important note !
 The application runs free of charge on the **[Render](https://render.com/pricing)** platform, which of course imposes certain restrictions on its use. For instance, it may happen that no web socket connection 
 can be established in the first few minutes, even after multiple refreshes of the web browser, as the cloud server shuts down after a while and takes some time to restart after a client request. 
 This may give the impression that the application is not working. In such situations, it helps not to give up immediately and to exercise patience. By reloading the application several times, you can ensure that 
@@ -18,3 +18,6 @@ the rendering of plots stops and the data is transmitted to the websocket server
 implemented in the intended way, see also information in the corresponding SEMANTICS paper.
 
 ![simulation](simulation_plots.png "Real time simulation of vital sign parameters based on randomly selected patient data.")
+
+Currently, bloodpressure, heartrate and stress level progression are simulated and plotted. The x-axis of the plots show the measurements or time steps and the y-axis depicts the measured values. 
+The bar chart below depicts the distribution of the vital sign measurements. The values are binned into categories: high, normal, low.
